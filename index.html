@@ -865,7 +865,6 @@
       if (ck) customKeyInput.value = ck;
       if (om) ollamaModelInput.value = om;
       toggleProviderFields();
-      if (settingsPanel) settingsPanel.classList.add('open');
     }
 
     [dsKeyInput, searchKeyInput, endpointInput, modelInput, customKeyInput, ollamaModelInput].forEach(function(el) {
@@ -942,23 +941,76 @@
     }
 
     async function callModel(opt) {
-      var cfg = getProviderConfig();
-      if (!cfg.apiKey) throw new Error("API key not set — open Settings and configure your provider");
-
       var messages = [];
       if (opt.system) messages.push({ role:"system", content:opt.system });
       messages.push({ role:"user", content:opt.user });
 
-      var headers = { "Content-Type":"application/json", "Authorization":"Bearer "+cfg.apiKey };
-      var body = { model: cfg.model, messages: messages, max_tokens: opt.max_tokens||1000, stream: false };
+      var body = {
+        model: "deepseek-chat",
+        messages: messages,
+        max_tokens: opt.max_tokens||1000,
+        stream: false
+      };
       if (opt.tools && opt.tools.length) body.tools = opt.tools;
 
-      var resp1 = await fetch(cfg.endpoint, { method:"POST", headers: headers, body: JSON.stringify(body) });
-      if (!resp1.ok) {
-        var t = await resp1.text().catch(function(){return '';});
-        var detail = t; try { var j = JSON.parse(t); detail = j.error&&j.error.message||t; } catch(e){}
-        throw new Error("API error "+resp1.status+": "+detail.slice(0,300));
+      // Try Vercel proxy first (no key needed — server-side)
+      var resp1 = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      }).catch(function(){ return null; });
+
+      // Fallback to direct provider config
+      if (!resp1 || !resp1.ok) {
+        var cfg = getProviderConfig();
+        if (!cfg.apiKey) throw new Error("API key not set — open Settings and configure your provider");
+        body.model = cfg.model;
+        resp1 = await fetch(cfg.endpoint, {
+          method: "POST",
+          headers: { "Content-Type":"application/json", "Authorization":"Bearer "+cfg.apiKey },
+          body: JSON.stringify(body)
+        });
+        if (!resp1.ok) {
+          var t = await resp1.text().catch(function(){return '';});
+          var detail = t; try { var j = JSON.parse(t); detail = j.error&&j.error.message||t; } catch(e){}
+          throw new Error("API error "+resp1.status+": "+detail.slice(0,300));
+        }
+        var data1 = await resp1.json();
+        var choice1 = data1.choices && data1.choices[0];
+        if (!choice1||!choice1.message) throw new Error("Empty response from API");
+        var msg1 = choice1.message;
+
+        if (msg1.tool_calls && msg1.tool_calls.length) {
+          messages.push({ role:"assistant", content:msg1.content||null, tool_calls:msg1.tool_calls });
+          for (var i = 0; i < msg1.tool_calls.length; i++) {
+            var tc = msg1.tool_calls[i];
+            var toolResult = "Error: unknown tool";
+            if (tc.function.name==="web_search") {
+              var args = {}; try { args = JSON.parse(tc.function.arguments); } catch(e){}
+              var query = args.query||opt.user;
+              try { toolResult = JSON.stringify(await performWebSearch(query)); }
+              catch(e) { toolResult = JSON.stringify({error:"Search failed: "+e.message}); }
+            }
+            messages.push({ role:"tool", tool_call_id:tc.id, content:toolResult });
+          }
+          var resp2 = await fetch(cfg.endpoint, {
+            method:"POST",
+            headers: { "Content-Type":"application/json", "Authorization":"Bearer "+cfg.apiKey },
+            body: JSON.stringify({ model: cfg.model, messages: messages, max_tokens: opt.max_tokens||1000, stream:false })
+          });
+          if (!resp2.ok) {
+            var t2 = await resp2.text().catch(function(){return '';});
+            var detail2 = t2; try { var j2 = JSON.parse(t2); detail2 = j2.error&&j2.error.message||t2; } catch(e){}
+            throw new Error("API error (follow-up) "+resp2.status+": "+detail2.slice(0,300));
+          }
+          var data2 = await resp2.json();
+          var choice2 = data2.choices && data2.choices[0];
+          return choice2&&choice2.message ? (choice2.message.content||'') : '';
+        }
+        return msg1.content||'';
       }
+
+      // Vercel proxy succeeded — parse response
       var data1 = await resp1.json();
       var choice1 = data1.choices && data1.choices[0];
       if (!choice1||!choice1.message) throw new Error("Empty response from API");
@@ -977,14 +1029,23 @@
           }
           messages.push({ role:"tool", tool_call_id:tc.id, content:toolResult });
         }
-        var resp2 = await fetch(cfg.endpoint, {
-          method:"POST", headers: headers,
-          body: JSON.stringify({ model: cfg.model, messages: messages, max_tokens: opt.max_tokens||1000, stream:false })
-        });
-        if (!resp2.ok) {
-          var t2 = await resp2.text().catch(function(){return '';});
-          var detail2 = t2; try { var j2 = JSON.parse(t2); detail2 = j2.error&&j2.error.message||t2; } catch(e){}
-          throw new Error("API error (follow-up) "+resp2.status+": "+detail2.slice(0,300));
+        var resp2 = await fetch("/api/chat", {
+          method:"POST",
+          headers: { "Content-Type":"application/json" },
+          body: JSON.stringify({ model:"deepseek-chat", messages: messages, max_tokens: opt.max_tokens||1000, stream:false })
+        }).catch(function(){ return null; });
+        if (!resp2 || !resp2.ok) {
+          // Fallback for tool follow-up
+          var cfg2 = getProviderConfig();
+          resp2 = await fetch(cfg2.endpoint, {
+            method:"POST",
+            headers: { "Content-Type":"application/json", "Authorization":"Bearer "+cfg2.apiKey },
+            body: JSON.stringify({ model: cfg2.model, messages: messages, max_tokens: opt.max_tokens||1000, stream:false })
+          });
+          if (!resp2.ok) {
+            var t2 = await resp2.text().catch(function(){return '';});
+            throw new Error("API error (follow-up) "+resp2.status+": "+t2.slice(0,300));
+          }
         }
         var data2 = await resp2.json();
         var choice2 = data2.choices && data2.choices[0];
@@ -1120,11 +1181,7 @@
     async function run() {
       var q = qInput.value.trim();
       if (!q) return;
-      if (!getProviderConfig().apiKey) {
-        errorEl.innerHTML = '<div class="agent-error">Open Settings and configure your AI provider first.</div>';
-        settingsPanel.classList.add('open');
-        return;
-      }
+
       treeEl.innerHTML = '';
       reportEl.innerHTML = '';
       errorEl.innerHTML = '';
