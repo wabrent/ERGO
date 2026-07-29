@@ -7,7 +7,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -110,8 +110,360 @@
       border: 1px solid rgba(255,255,255,0.2);
     }
 
-    .glass-btn:hover {
-      background: rgba(255,255,255,0.25);
+    .glass-btn:hover { background: rgba(255,255,255,0.25); }
+
+    /* ---- Agent styles ---- */
+
+    :root {
+      --amber: #e0a94e;
+      --amber-bg: rgba(224,169,78,0.12);
+      --amber-border: rgba(224,169,78,0.3);
+      --teal: #5fb894;
+      --teal-bg: rgba(95,184,148,0.12);
+      --teal-border: rgba(95,184,148,0.3);
+      --red: #d9705f;
+      --red-bg: rgba(217,112,95,0.1);
+      --red-border: rgba(217,112,95,0.35);
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+    }
+
+    .agent-section {
+      padding: 60px 24px 100px;
+      line-height: 1.6;
+    }
+
+    .agent-shell { max-width: 780px; margin: 0 auto; }
+
+    .agent-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 6px;
+    }
+
+    .agent-title {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin: 0 0 6px;
+      color: #fff;
+    }
+
+    .agent-sub {
+      color: rgba(255,255,255,0.55);
+      font-size: 14px;
+      margin: 0 0 24px;
+      max-width: 520px;
+      line-height: 1.55;
+    }
+
+    .agent-settings-toggle {
+      cursor: pointer;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 6px 14px;
+      margin-bottom: 22px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: .15s;
+      font-size: 12px;
+      color: rgba(255,255,255,0.55);
+    }
+    .agent-settings-toggle:hover { border-color: rgba(255,255,255,0.15); color: #fff; background: rgba(255,255,255,0.08); }
+
+    .agent-settings-panel {
+      display: none;
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 24px;
+    }
+    .agent-settings-panel.open { display: block; }
+
+    .agent-settings-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 20px;
+    }
+
+    .agent-label {
+      font-size: 10px;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+
+    .agent-input {
+      width: 100%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 9px 12px;
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      outline: none;
+      transition: border-color .15s;
+    }
+    .agent-input:focus { border-color: var(--amber); }
+    .agent-input::placeholder { color: rgba(255,255,255,0.3); }
+
+    select.agent-input {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(255,255,255,0.4)'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+      cursor: pointer;
+    }
+
+    .agent-num {
+      width: 52px;
+      text-align: center;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 8px 4px;
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      outline: none;
+      transition: border-color .15s;
+    }
+    .agent-num:focus { border-color: var(--amber); }
+
+    .agent-inline { display: flex; align-items: center; gap: 8px; }
+
+    .agent-formrow { display: flex; gap: 10px; margin-bottom: 8px; }
+
+    .agent-q {
+      flex: 1;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 14px 18px;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .agent-q:focus { border-color: var(--amber); box-shadow: 0 0 0 3px var(--amber-bg); }
+    .agent-q::placeholder { color: rgba(255,255,255,0.3); }
+
+    .agent-btn {
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 0 24px;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background .15s, transform .1s;
+      white-space: nowrap;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .agent-btn:hover:not(:disabled) { background: rgba(255,255,255,0.2); }
+    .agent-btn:active:not(:disabled) { transform: scale(0.98); }
+    .agent-btn:disabled { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.3); cursor: not-allowed; border-color: rgba(255,255,255,0.06); }
+
+    .agent-presets { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 40px; }
+    .agent-preset {
+      font-size: 12px;
+      color: rgba(255,255,255,0.55);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 999px;
+      padding: 6px 14px;
+      cursor: pointer;
+      transition: .15s;
+    }
+    .agent-preset:hover { border-color: rgba(255,255,255,0.15); color: #fff; background: rgba(255,255,255,0.08); }
+
+    .agent-flow-label {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      margin: 4px 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 500;
+      animation: fadeIn .3s ease both;
+    }
+    .agent-flow-label::after { content:""; flex:1; height:1px; background: rgba(255,255,255,0.08); }
+
+    .agent-tree { position: relative; }
+
+    @keyframes nodeSlideIn {
+      0%   { opacity: 0; transform: translateY(-12px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      0%   { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+      0%   { opacity: 0; transform: translateY(16px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes subtlePulse {
+      0%, 100% { box-shadow: 0 0 0 0 var(--amber-bg); }
+      50%      { box-shadow: 0 0 0 6px rgba(224,169,78,0); }
+    }
+
+    .agent-node {
+      position: relative;
+      padding-left: 24px;
+      border-left: 1px solid rgba(255,255,255,0.08);
+      animation: nodeSlideIn .35s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+    }
+    .agent-node.root { border-left: none; padding-left: 0; }
+
+    .agent-node-body {
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 10px;
+      transition: border-color .4s cubic-bezier(0.22, 0.61, 0.36, 1),
+                  box-shadow .4s cubic-bezier(0.22, 0.61, 0.36, 1),
+                  background .4s cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
+    .agent-node-body.status-done { border-color: var(--teal-border); background: var(--teal-bg); }
+    .agent-node-body.status-error { border-color: var(--red-border); background: var(--red-bg); }
+    .agent-node-body.active {
+      border-color: var(--amber-border);
+      box-shadow: 0 0 0 2px var(--amber-bg);
+      background: rgba(224,169,78,0.06);
+      animation: subtlePulse 2.2s ease-in-out infinite;
+    }
+
+    .agent-node-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+
+    .agent-badge {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.55);
+      white-space: nowrap;
+      flex-shrink: 0;
+      font-weight: 500;
+    }
+    .agent-badge.atomizer { color: var(--amber); background: var(--amber-bg); }
+    .agent-badge.planner { color: var(--amber); background: var(--amber-bg); }
+    .agent-badge.executor { color: #7aafed; background: rgba(122,175,237,0.12); }
+    .agent-badge.aggregator { color: var(--teal); background: var(--teal-bg); }
+    .agent-badge.done { color: var(--teal); background: var(--teal-bg); }
+    .agent-badge.error { color: var(--red); background: var(--red-bg); }
+
+    .agent-pulse {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--amber); flex-shrink: 0;
+      animation: agent-blink 1.1s ease-in-out infinite;
+    }
+    @keyframes agent-blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+    .agent-node-task { font-size: 14.5px; color: #fff; line-height: 1.45; }
+
+    .agent-node-result {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      font-size: 13.5px;
+      color: rgba(255,255,255,0.55);
+      white-space: pre-wrap;
+      line-height: 1.6;
+      animation: fadeIn .35s ease both;
+    }
+
+    .agent-children { margin-left: 8px; }
+
+    .agent-report {
+      margin-top: 36px;
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--amber-border);
+      border-radius: 16px;
+      padding: 32px 34px;
+      animation: fadeInUp .5s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+    }
+    .agent-report-label {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+    .agent-report-title {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 400;
+      margin: 0 0 16px;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      color: #fff;
+    }
+    .agent-report-body {
+      font-size: 15px;
+      color: #fff;
+      white-space: pre-wrap;
+      line-height: 1.7;
+    }
+
+    .agent-report-footnote {
+      font-size: 11px;
+      color: var(--amber);
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      line-height: 1.5;
+    }
+
+    .agent-error {
+      background: var(--red-bg);
+      border: 1px solid var(--red-border);
+      color: #f0b3a8;
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 13.5px;
+      margin-top: 20px;
+      line-height: 1.5;
+      animation: nodeSlideIn .35s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+    }
+
+    .agent-footer-note {
+      margin-top: 48px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.3);
+      text-align: center;
     }
   </style>
 
@@ -140,7 +492,7 @@
         <a href="https://github.com/sentient-agi/ROMA" target="_blank" rel="noopener" class="text-sm text-white/60 hover:text-white transition-colors duration-200">ROMA</a>
       </div>
 
-      <a href="roma-research-agent.html" class="px-5 py-2.5 bg-white/15 backdrop-blur-md border border-white/20 text-white text-sm font-medium rounded-lg hover:bg-white/25 transition-all duration-200">
+      <a href="#agent" class="px-5 py-2.5 bg-white/15 backdrop-blur-md border border-white/20 text-white text-sm font-medium rounded-lg hover:bg-white/25 transition-all duration-200">
         Launch Ergo
       </a>
     </div>
@@ -148,17 +500,14 @@
 
   <!-- Hero Section -->
   <section class="relative flex flex-col items-center h-screen hero-bg overflow-hidden">
-    <!-- Dark overlay -->
     <div class="absolute inset-0 z-0 bg-gradient-to-b from-black/60 via-black/30 to-black/70"></div>
 
-    <!-- Wave animations -->
     <div class="absolute bottom-0 left-0 right-0 z-[1] h-32 sm:h-40 md:h-48 overflow-hidden pointer-events-none">
       <div class="wave wave-1"></div>
       <div class="wave wave-2"></div>
       <div class="wave wave-3"></div>
     </div>
 
-    <!-- Hero content -->
     <div class="relative z-10 flex flex-col items-center text-center pt-24 sm:pt-26 md:pt-32 px-4 sm:px-6">
       <h1 class="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl leading-[1.1] tracking-tighter text-white font-normal drop-shadow-lg">
         Research that<br />compounds.
@@ -166,15 +515,13 @@
       <p class="max-w-sm sm:max-w-md mt-5 sm:mt-6 md:mt-8 text-sm md:text-base text-white/70 leading-relaxed drop-shadow">
         Recursive research agent built on the ROMA meta-agent pattern. Decomposes hard questions, investigates every piece with live web search, and synthesizes findings into one verifiable report.
       </p>
-      <a href="roma-research-agent.html" class="mt-6 sm:mt-8 md:mt-10 px-6 sm:px-8 py-3 sm:py-3.5 glass-btn text-white text-sm font-medium rounded-lg transition-all duration-200 inline-block">
+      <a href="#agent" class="mt-6 sm:mt-8 md:mt-10 px-6 sm:px-8 py-3 sm:py-3.5 glass-btn text-white text-sm font-medium rounded-lg transition-all duration-200 inline-block">
         Launch Ergo
       </a>
     </div>
 
-    <!-- Bottom info panel -->
     <div id="how-it-works" class="relative z-10 w-full max-w-5xl px-4 sm:px-6 mt-auto pb-8 sm:pb-12">
       <div class="glass-card rounded-t-xl pt-8 sm:pt-12 md:pt-16 px-5 sm:px-8 md:px-12 pb-8 sm:pb-10">
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 lg:gap-16">
           <div>
             <div class="text-[11px] uppercase tracking-[0.2em] text-white/40 font-medium">How it works</div>
@@ -192,7 +539,7 @@
         <div class="mt-6 sm:mt-8 md:mt-10 h-px bg-white/10 w-full"></div>
 
         <div id="features" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[2px] sm:gap-[3px]">
-          <a href="roma-research-agent.html" class="group bg-white/5 hover:bg-white/10 transition-all duration-200 px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between rounded-lg sm:rounded-none no-underline border border-white/5">
+          <a href="#agent" class="group bg-white/5 hover:bg-white/10 transition-all duration-200 px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between rounded-lg sm:rounded-none no-underline border border-white/5">
             <div class="flex items-center">
               <span class="text-white/30 text-sm">01</span>
               <span class="mx-2 text-white/20">/</span>
@@ -200,8 +547,7 @@
             </div>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-white/30 group-hover:text-white/70 group-hover:translate-x-0.5 transition-all duration-200"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
-
-          <a href="roma-research-agent.html" class="group bg-white/5 hover:bg-white/10 transition-all duration-200 px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between rounded-lg sm:rounded-none no-underline border border-white/5">
+          <a href="#agent" class="group bg-white/5 hover:bg-white/10 transition-all duration-200 px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between rounded-lg sm:rounded-none no-underline border border-white/5">
             <div class="flex items-center">
               <span class="text-white/30 text-sm">02</span>
               <span class="mx-2 text-white/20">/</span>
@@ -209,8 +555,7 @@
             </div>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-white/30 group-hover:text-white/70 group-hover:translate-x-0.5 transition-all duration-200"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
-
-          <a href="roma-research-agent.html" class="group bg-white/5 hover:bg-white/10 transition-all duration-200 px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between rounded-lg sm:rounded-none no-underline border border-white/5">
+          <a href="#agent" class="group bg-white/5 hover:bg-white/10 transition-all duration-200 px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between rounded-lg sm:rounded-none no-underline border border-white/5">
             <div class="flex items-center">
               <span class="text-white/30 text-sm">03</span>
               <span class="mx-2 text-white/20">/</span>
@@ -218,8 +563,7 @@
             </div>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-white/30 group-hover:text-white/70 group-hover:translate-x-0.5 transition-all duration-200"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
-
-          <a href="roma-research-agent.html" class="group bg-white/5 hover:bg-white/10 transition-all duration-200 px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between rounded-lg sm:rounded-none no-underline border border-white/5">
+          <a href="#agent" class="group bg-white/5 hover:bg-white/10 transition-all duration-200 px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between rounded-lg sm:rounded-none no-underline border border-white/5">
             <div class="flex items-center">
               <span class="text-white/30 text-sm">04</span>
               <span class="mx-2 text-white/20">/</span>
@@ -232,8 +576,80 @@
     </div>
   </section>
 
+  <!-- Research Agent Section -->
+  <section id="agent" class="agent-section">
+    <div class="agent-shell">
+      <div class="agent-eyebrow">Atomizer → Planner → Executor → Aggregator</div>
+      <h2 class="agent-title">Research Agent</h2>
+      <p class="agent-sub">Built on ROMA's meta-agent pattern. Decomposes hard questions, investigates every piece with live web search, and synthesizes findings into one verifiable report.</p>
+
+      <button class="agent-settings-toggle" id="agent-settings-toggle">Settings</button>
+
+      <div class="agent-settings-panel" id="agent-settings-panel">
+        <div class="agent-settings-grid">
+          <div style="grid-column: span 2;">
+            <div class="agent-label">AI Provider</div>
+            <select id="agent-provider" class="agent-input">
+              <option value="deepseek">DeepSeek</option>
+              <option value="custom">Custom provider…</option>
+            </select>
+          </div>
+          <div class="agent-ds-fields" style="grid-column:span 2;">
+            <div class="agent-label">DeepSeek API Key<span style="color:var(--red);margin-left:2px;">*</span></div>
+            <input id="agent-ds-key" class="agent-input" type="password" placeholder="sk-..." autocomplete="off" />
+          </div>
+          <div class="agent-custom-fields" style="display:none;grid-column:span 2;">
+            <div class="agent-label">API Endpoint</div>
+            <input id="agent-endpoint" class="agent-input" type="text" placeholder="https://api.deepseek.com/chat/completions" autocomplete="off" />
+          </div>
+          <div class="agent-custom-fields" style="display:none;">
+            <div class="agent-label">Model Name</div>
+            <input id="agent-model" class="agent-input" type="text" placeholder="deepseek-chat" autocomplete="off" />
+          </div>
+          <div class="agent-custom-fields" style="display:none;">
+            <div class="agent-label">API Key<span style="color:var(--red);margin-left:2px;">*</span></div>
+            <input id="agent-custom-key" class="agent-input" type="password" placeholder="sk-..." autocomplete="off" />
+          </div>
+          <div>
+            <div class="agent-label">Search API Key (Serper.dev)</div>
+            <input id="agent-search-key" class="agent-input" type="password" placeholder="optional — for live web search" autocomplete="off" />
+          </div>
+          <div></div>
+          <div>
+            <div class="agent-label">Max Recursion Depth</div>
+            <div class="agent-inline">
+              <input id="agent-max-depth" class="agent-num" type="number" value="2" min="1" max="4" step="1" />
+              <span class="agent-label" style="margin:0">levels</span>
+            </div>
+          </div>
+          <div>
+            <div class="agent-label">Max Leaf Nodes</div>
+            <div class="agent-inline">
+              <input id="agent-max-leaves" class="agent-num" type="number" value="10" min="3" max="30" step="1" />
+              <span class="agent-label" style="margin:0">leaves</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="agent-formrow">
+        <input id="agent-q" class="agent-q" type="text" placeholder="e.g. Should a small SaaS company self-host its LLM or use an API in 2026?" />
+        <button id="agent-go" class="agent-btn">Research</button>
+      </div>
+      <div class="agent-presets" id="agent-presets"></div>
+
+      <div id="agent-flow-label" class="agent-flow-label" style="display:none;">Research in progress</div>
+      <div id="agent-tree" class="agent-tree"></div>
+      <div id="agent-error"></div>
+      <div id="agent-report"></div>
+
+      <div class="agent-footer-note">Multi-provider AI · Web search via Serper.dev (function calling) · Built on ROMA</div>
+    </div>
+  </section>
+
   <script>
-    // Smooth scroll for nav links
+  (function() {
+    // Smooth scroll for nav/hero links
     document.querySelectorAll('a[href^="#"]').forEach(function(a) {
       a.addEventListener('click', function(e) {
         e.preventDefault();
@@ -241,6 +657,371 @@
         if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     });
+
+    // ---- Research Agent Logic ----
+
+    var qInput = document.getElementById('agent-q');
+    var goBtn = document.getElementById('agent-go');
+    var presetsEl = document.getElementById('agent-presets');
+    var treeEl = document.getElementById('agent-tree');
+    var reportEl = document.getElementById('agent-report');
+    var errorEl = document.getElementById('agent-error');
+    var flowLabel = document.getElementById('agent-flow-label');
+    var settingsToggle = document.getElementById('agent-settings-toggle');
+    var settingsPanel = document.getElementById('agent-settings-panel');
+    var providerSelect = document.getElementById('agent-provider');
+    var dsKeyInput = document.getElementById('agent-ds-key');
+    var dsFields = document.querySelectorAll('.agent-ds-fields');
+    var endpointInput = document.getElementById('agent-endpoint');
+    var modelInput = document.getElementById('agent-model');
+    var customKeyInput = document.getElementById('agent-custom-key');
+    var customFields = document.querySelectorAll('.agent-custom-fields');
+    var searchKeyInput = document.getElementById('agent-search-key');
+    var maxDepthInput = document.getElementById('agent-max-depth');
+    var maxLeavesInput = document.getElementById('agent-max-leaves');
+
+    var DEEPSEEK_ENDPOINT = 'https://api.deepseek.com/chat/completions';
+    var DEEPSEEK_MODEL = 'deepseek-chat';
+
+    function getSearchKey() { return searchKeyInput.value.trim(); }
+
+    function getProviderConfig() {
+      if (providerSelect.value === 'deepseek') {
+        return { endpoint: DEEPSEEK_ENDPOINT, model: DEEPSEEK_MODEL, apiKey: dsKeyInput.value.trim() };
+      }
+      return {
+        endpoint: endpointInput.value.trim() || DEEPSEEK_ENDPOINT,
+        model: modelInput.value.trim() || 'deepseek-chat',
+        apiKey: customKeyInput.value.trim()
+      };
+    }
+
+    function toggleProviderFields() {
+      var isCustom = providerSelect.value === 'custom';
+      dsFields.forEach(function(el) { el.style.display = isCustom ? 'none' : ''; });
+      customFields.forEach(function(el) { el.style.display = isCustom ? '' : 'none'; });
+    }
+
+    providerSelect.addEventListener('change', function() {
+      toggleProviderFields();
+      sessionStorage.setItem('ergo_provider', providerSelect.value);
+    });
+
+    settingsToggle.addEventListener('click', function() {
+      settingsPanel.classList.toggle('open');
+    });
+
+    function restoreSettings() {
+      var prov = sessionStorage.getItem('ergo_provider') || 'deepseek';
+      var dk = sessionStorage.getItem('ergo_ds_key');
+      var sk = sessionStorage.getItem('ergo_search_key');
+      var md = sessionStorage.getItem('ergo_max_depth');
+      var ml = sessionStorage.getItem('ergo_max_leaves');
+      var ep = sessionStorage.getItem('ergo_endpoint');
+      var mod = sessionStorage.getItem('ergo_model');
+      var ck = sessionStorage.getItem('ergo_custom_key');
+
+      providerSelect.value = prov;
+      if (dk) dsKeyInput.value = dk;
+      if (sk) searchKeyInput.value = sk;
+      if (md) maxDepthInput.value = md;
+      if (ml) maxLeavesInput.value = ml;
+      if (ep) endpointInput.value = ep;
+      if (mod) modelInput.value = mod;
+      if (ck) customKeyInput.value = ck;
+      toggleProviderFields();
+      if (settingsPanel) settingsPanel.classList.add('open');
+    }
+
+    [dsKeyInput, searchKeyInput, endpointInput, modelInput, customKeyInput].forEach(function(el) {
+      el.addEventListener('input', function() {
+        sessionStorage.setItem('ergo_ds_key', dsKeyInput.value.trim());
+        sessionStorage.setItem('ergo_search_key', searchKeyInput.value.trim());
+        sessionStorage.setItem('ergo_endpoint', endpointInput.value.trim());
+        sessionStorage.setItem('ergo_model', modelInput.value.trim());
+        sessionStorage.setItem('ergo_custom_key', customKeyInput.value.trim());
+      });
+    });
+
+    [maxDepthInput, maxLeavesInput].forEach(function(el) {
+      el.addEventListener('change', function() {
+        sessionStorage.setItem('ergo_max_depth', maxDepthInput.value);
+        sessionStorage.setItem('ergo_max_leaves', maxLeavesInput.value);
+      });
+    });
+
+    restoreSettings();
+
+    var PRESETS = [
+      "What's the most viable path to profitability for open-weight AI model companies?",
+      "How should a small farming co-op in Kenya think about adopting AI for crop pricing?",
+      "Is on-device AI inference actually ready to replace cloud APIs for consumer apps in 2026?"
+    ];
+    PRESETS.forEach(function(p) {
+      var b = document.createElement('div');
+      b.className = 'agent-preset';
+      b.textContent = p.length > 60 ? p.slice(0,58) + '\u2026' : p;
+      b.title = p;
+      b.onclick = function() { qInput.value = p; };
+      presetsEl.appendChild(b);
+    });
+
+    var leafCount = 0;
+
+    function stripFences(s) {
+      return s.replace(/```json/gi,'').replace(/```/g,'').trim();
+    }
+
+    var WEB_SEARCH_TOOL = {
+      type: "function",
+      function: {
+        name: "web_search",
+        description: "Search the web for current, up-to-date information.",
+        parameters: {
+          type: "object",
+          properties: { query: { type: "string", description: "The search query" } },
+          required: ["query"]
+        }
+      }
+    };
+
+    function getMaxDepth() { return parseInt(maxDepthInput.value) || 2; }
+    function getMaxLeaves() { return parseInt(maxLeavesInput.value) || 10; }
+
+    async function performWebSearch(query) {
+      var sk = getSearchKey();
+      if (!sk) throw new Error("Search API key not configured");
+      var resp = await fetch("https://google.serper.dev/search", {
+        method: "POST",
+        headers: { "Content-Type":"application/json", "X-API-KEY": sk },
+        body: JSON.stringify({ q: query })
+      });
+      if (!resp.ok) { var t = await resp.text().catch(function(){return '';}); throw new Error("Search API error "+resp.status+": "+t.slice(0,200)); }
+      var data = await resp.json();
+      var organic = data.organic || [];
+      var results = organic.slice(0,5).map(function(r,i) {
+        return { position:i+1, title:r.title||'', url:r.link||'', snippet:r.snippet||'' };
+      });
+      return { query: query, results: results, totalFound: organic.length };
+    }
+
+    async function callModel(opt) {
+      var cfg = getProviderConfig();
+      if (!cfg.apiKey) throw new Error("API key not set — open Settings and configure your provider");
+
+      var messages = [];
+      if (opt.system) messages.push({ role:"system", content:opt.system });
+      messages.push({ role:"user", content:opt.user });
+
+      var headers = { "Content-Type":"application/json", "Authorization":"Bearer "+cfg.apiKey };
+      var body = { model: cfg.model, messages: messages, max_tokens: opt.max_tokens||1000, stream: false };
+      if (opt.tools && opt.tools.length) body.tools = opt.tools;
+
+      var resp1 = await fetch(cfg.endpoint, { method:"POST", headers: headers, body: JSON.stringify(body) });
+      if (!resp1.ok) {
+        var t = await resp1.text().catch(function(){return '';});
+        var detail = t; try { var j = JSON.parse(t); detail = j.error&&j.error.message||t; } catch(e){}
+        throw new Error("API error "+resp1.status+": "+detail.slice(0,300));
+      }
+      var data1 = await resp1.json();
+      var choice1 = data1.choices && data1.choices[0];
+      if (!choice1||!choice1.message) throw new Error("Empty response from API");
+      var msg1 = choice1.message;
+
+      if (msg1.tool_calls && msg1.tool_calls.length) {
+        messages.push({ role:"assistant", content:msg1.content||null, tool_calls:msg1.tool_calls });
+        for (var i = 0; i < msg1.tool_calls.length; i++) {
+          var tc = msg1.tool_calls[i];
+          var toolResult = "Error: unknown tool";
+          if (tc.function.name==="web_search") {
+            var args = {}; try { args = JSON.parse(tc.function.arguments); } catch(e){}
+            var query = args.query||opt.user;
+            try { toolResult = JSON.stringify(await performWebSearch(query)); }
+            catch(e) { toolResult = JSON.stringify({error:"Search failed: "+e.message}); }
+          }
+          messages.push({ role:"tool", tool_call_id:tc.id, content:toolResult });
+        }
+        var resp2 = await fetch(cfg.endpoint, {
+          method:"POST", headers: headers,
+          body: JSON.stringify({ model: cfg.model, messages: messages, max_tokens: opt.max_tokens||1000, stream:false })
+        });
+        if (!resp2.ok) {
+          var t2 = await resp2.text().catch(function(){return '';});
+          var detail2 = t2; try { var j2 = JSON.parse(t2); detail2 = j2.error&&j2.error.message||t2; } catch(e){}
+          throw new Error("API error (follow-up) "+resp2.status+": "+detail2.slice(0,300));
+        }
+        var data2 = await resp2.json();
+        var choice2 = data2.choices && data2.choices[0];
+        return choice2&&choice2.message ? (choice2.message.content||'') : '';
+      }
+      return msg1.content||'';
+    }
+
+    async function callAtomizer(task) {
+      var raw = await callModel({
+        system: "You decide whether a research question is simple enough to answer directly (atomic), or complex enough that it should be split into distinct sub-questions. Respond with ONLY raw JSON: {\"is_atomic\":boolean,\"reason\":string}. Bias towards atomic.",
+        user: task, max_tokens: 300
+      });
+      try { return JSON.parse(stripFences(raw)); }
+      catch(e){ return { is_atomic:true, reason:"fallback (parse error)" }; }
+    }
+
+    async function callPlanner(task) {
+      var raw = await callModel({
+        system: "Break the research question into 2-4 distinct, non-overlapping sub-questions. Respond with ONLY raw JSON: {\"subtasks\":[string,...]}. Each subtask should be answerable on its own.",
+        user: task, max_tokens: 400
+      });
+      try {
+        var p = JSON.parse(stripFences(raw));
+        if (Array.isArray(p.subtasks) && p.subtasks.length) return p.subtasks.slice(0,4);
+        throw new Error("empty");
+      } catch(e){ return [task]; }
+    }
+
+    async function callExecutor(task) {
+      var hasSearch = !!getSearchKey();
+      return await callModel({
+        system: hasSearch
+          ? "You are a focused research sub-agent. Use the web_search tool to investigate the question, then give a concise, well-grounded answer (3-6 sentences). Paraphrase, do not quote verbatim. Note where evidence is mixed."
+          : "You are a focused research sub-agent. Give a concise, well-grounded answer (3-6 sentences). You do NOT have live web search — your answer reflects your training cutoff only. Note this limitation explicitly.",
+        user: task,
+        tools: hasSearch ? [WEB_SEARCH_TOOL] : undefined,
+        max_tokens: 1000
+      });
+    }
+
+    async function callAggregator(parentTask, childPairs) {
+      var findings = childPairs.map(function(c,i) { return (i+1)+'. '+c.task+'\n   Finding: '+c.result; }).join("\n\n");
+      return await callModel({
+        system: "Synthesize the sub-findings below into one coherent, well-organized answer to the parent question. Resolve overlaps, note disagreements. Write in clear prose.",
+        user: "Parent question: "+parentTask+"\n\nSub-findings:\n"+findings,
+        max_tokens: 1000
+      });
+    }
+
+    function makeNodeEl(depth, isRoot) {
+      var wrap = document.createElement('div');
+      wrap.className = 'agent-node' + (isRoot ? ' root' : '');
+      var body = document.createElement('div');
+      body.className = 'agent-node-body active';
+      var head = document.createElement('div');
+      head.className = 'agent-node-head';
+      var pulse = document.createElement('div');
+      pulse.className = 'agent-pulse';
+      var badge = document.createElement('div');
+      badge.className = 'agent-badge atomizer';
+      badge.textContent = 'analyzing';
+      head.appendChild(pulse);
+      head.appendChild(badge);
+      var taskEl = document.createElement('div');
+      taskEl.className = 'agent-node-task';
+      body.appendChild(head);
+      body.appendChild(taskEl);
+      wrap.appendChild(body);
+      var childrenEl = document.createElement('div');
+      childrenEl.className = 'agent-children';
+      wrap.appendChild(childrenEl);
+      return { wrap: wrap, body: body, head: head, pulse: pulse, badge: badge, taskEl: taskEl, childrenEl: childrenEl };
+    }
+
+    function setStatus(ui, label, cls, showPulse) {
+      ui.badge.textContent = label;
+      ui.badge.className = 'agent-badge ' + cls;
+      ui.pulse.style.display = showPulse ? 'block' : 'none';
+      ui.body.className = 'agent-node-body' + (cls==='done'?' status-done':cls==='error'?' status-error':' active');
+    }
+
+    async function solve(task, depth, parentChildrenEl, isRoot) {
+      var ui = makeNodeEl(depth, isRoot);
+      ui.taskEl.textContent = task;
+      parentChildrenEl.appendChild(ui.wrap);
+      var MAX_DEPTH = getMaxDepth();
+      var MAX_LEAVES = getMaxLeaves();
+
+      try {
+        var isAtomic = true;
+        if (depth < MAX_DEPTH && leafCount < MAX_LEAVES) {
+          var atom = await callAtomizer(task);
+          isAtomic = atom.is_atomic;
+        }
+        if (isAtomic || leafCount >= MAX_LEAVES) {
+          setStatus(ui, 'searching', 'executor', true);
+          leafCount++;
+          var result = await callExecutor(task);
+          setStatus(ui, 'done', 'done', false);
+          var resEl = document.createElement('div');
+          resEl.className = 'agent-node-result';
+          resEl.textContent = result;
+          ui.body.appendChild(resEl);
+          return { task: task, result: result };
+        } else {
+          setStatus(ui, 'planning', 'planner', true);
+          var subtasks = await callPlanner(task);
+          var childResults = [];
+          for (var i = 0; i < subtasks.length; i++) {
+            var r = await solve(subtasks[i], depth+1, ui.childrenEl, false);
+            childResults.push(r);
+          }
+          setStatus(ui, 'aggregating', 'aggregator', true);
+          var aggregated = await callAggregator(task, childResults);
+          setStatus(ui, 'done', 'done', false);
+          var resEl2 = document.createElement('div');
+          resEl2.className = 'agent-node-result';
+          resEl2.textContent = aggregated;
+          ui.body.appendChild(resEl2);
+          return { task: task, result: aggregated };
+        }
+      } catch(err) {
+        setStatus(ui, 'error', 'error', false);
+        var errEl = document.createElement('div');
+        errEl.className = 'agent-node-result';
+        errEl.textContent = 'Failed: ' + err.message;
+        ui.body.appendChild(errEl);
+        throw err;
+      }
+    }
+
+    async function run() {
+      var q = qInput.value.trim();
+      if (!q) return;
+      if (!getProviderConfig().apiKey) {
+        errorEl.innerHTML = '<div class="agent-error">Open Settings and configure your AI provider first.</div>';
+        settingsPanel.classList.add('open');
+        return;
+      }
+      treeEl.innerHTML = '';
+      reportEl.innerHTML = '';
+      errorEl.innerHTML = '';
+      flowLabel.style.display = 'flex';
+      goBtn.disabled = true;
+      goBtn.textContent = 'Researching\u2026';
+      leafCount = 0;
+      var hasSearch = !!getSearchKey();
+
+      try {
+        var rootResult = await solve(q, 0, treeEl, true);
+        reportEl.innerHTML =
+          '<div class="agent-report">'+
+            '<div class="agent-report-label">Final Report</div>'+
+            '<div class="agent-report-title">'+escapeHtml(q)+'</div>'+
+            '<div class="agent-report-body">'+escapeHtml(rootResult.result)+'</div>'+
+            (!hasSearch ? '<div class="agent-report-footnote">No search API key configured — executor answers are based on model training knowledge only, without live web verification.</div>' : '')+
+          '</div>';
+      } catch(err) {
+        errorEl.innerHTML = '<div class="agent-error">Research stopped: '+escapeHtml(err.message)+'</div>';
+      } finally {
+        goBtn.disabled = false;
+        goBtn.textContent = 'Research';
+      }
+    }
+
+    function escapeHtml(s) {
+      return (s||'').replace(/[&<>"']/g, function(c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; });
+    }
+
+    goBtn.addEventListener('click', run);
+    qInput.addEventListener('keydown', function(e) { if (e.key==='Enter') run(); });
+  })();
   </script>
 
 </body>
