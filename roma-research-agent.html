@@ -226,16 +226,38 @@
       gap: 12px;
       font-family: var(--font-body);
       font-weight: 500;
+      animation: fadeIn 0.3s ease both;
     }
     .ergo-flow-label::after { content:""; flex:1; height:1px; background: var(--line); }
 
     .ergo-tree { position: relative; }
+
+    @keyframes nodeSlideIn {
+      0%   { opacity: 0; transform: translateY(-12px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      0%   { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+      0%   { opacity: 0; transform: translateY(16px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes subtlePulse {
+      0%, 100% { box-shadow: 0 0 0 0 var(--amber-bg); }
+      50%      { box-shadow: 0 0 0 6px rgba(224,169,78,0); }
+    }
 
     .ergo-node {
       position: relative;
       margin-left: 0;
       padding-left: 24px;
       border-left: 1px solid var(--line);
+      animation: nodeSlideIn 0.35s cubic-bezier(0.22, 0.61, 0.36, 1) both;
     }
     .ergo-node.root { border-left: none; padding-left: 0; }
 
@@ -248,7 +270,9 @@
       padding: 16px 18px;
       margin-bottom: 10px;
       position: relative;
-      transition: border-color .3s, box-shadow .3s, background .3s;
+      transition: border-color .4s cubic-bezier(0.22, 0.61, 0.36, 1),
+                  box-shadow .4s cubic-bezier(0.22, 0.61, 0.36, 1),
+                  background .4s cubic-bezier(0.22, 0.61, 0.36, 1);
     }
     .ergo-node-body.status-done {
       border-color: var(--teal-border);
@@ -262,6 +286,7 @@
       border-color: var(--amber-border);
       box-shadow: 0 0 0 2px var(--amber-bg);
       background: rgba(224,169,78,0.06);
+      animation: subtlePulse 2.2s ease-in-out infinite;
     }
 
     .ergo-node-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
@@ -307,6 +332,7 @@
       color: var(--text-muted);
       white-space: pre-wrap;
       line-height: 1.6;
+      animation: fadeIn 0.35s ease both;
     }
 
     .ergo-children { margin-left: 8px; }
@@ -319,6 +345,7 @@
       border: 1px solid var(--amber-border);
       border-radius: 16px;
       padding: 32px 34px;
+      animation: fadeInUp 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) both;
     }
     .ergo-report-label {
       font-size: 10px;
@@ -361,6 +388,7 @@
       font-size: 13.5px;
       margin-top: 20px;
       line-height: 1.5;
+      animation: nodeSlideIn 0.35s cubic-bezier(0.22, 0.61, 0.36, 1) both;
     }
 
     .ergo-footer-note {
