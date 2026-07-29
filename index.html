@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="min-h-screen bg-white">
+<html lang="en" class="min-h-screen">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -27,20 +27,103 @@
     * { box-sizing: border-box; }
     html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
     body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
-  </style>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='5' r='4' fill='%23191919'/%3E%3Ccircle cx='7' cy='25' r='4' fill='%23191919'/%3E%3Ccircle cx='25' cy='25' r='4' fill='%23191919'/%3E%3C/svg%3E" />
-</head>
-<body class="min-h-screen bg-white overflow-x-hidden antialiased">
 
-  <!-- Full-page canvas background -->
-  <canvas id="ergo-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;display:block;pointer-events:none;"></canvas>
+    .hero-bg {
+      background-image: url('146714-chernyy-volna-belye-more-minimalizm-3840x2160.jpg');
+      background-size: cover;
+      background-position: center;
+      animation: kenburns 20s ease-in-out infinite alternate;
+    }
+
+    @keyframes kenburns {
+      0%   { transform: scale(1); }
+      100% { transform: scale(1.05); }
+    }
+
+    @keyframes wave1 {
+      0%   { transform: translateX(0) translateZ(0) scaleY(1); }
+      50%  { transform: translateX(-25%) translateZ(0) scaleY(0.55); }
+      100% { transform: translateX(-50%) translateZ(0) scaleY(1); }
+    }
+
+    @keyframes wave2 {
+      0%   { transform: translateX(0) translateZ(0) scaleY(1); }
+      50%  { transform: translateX(-25%) translateZ(0) scaleY(0.8); }
+      100% { transform: translateX(-50%) translateZ(0) scaleY(1); }
+    }
+
+    @keyframes wave3 {
+      0%   { transform: translateX(0) translateZ(0) scaleY(1); }
+      50%  { transform: translateX(-25%) translateZ(0) scaleY(0.6); }
+      100% { transform: translateX(-50%) translateZ(0) scaleY(1); }
+    }
+
+    .wave {
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 200%;
+      height: 100%;
+      background-repeat: repeat-x;
+      transform-origin: center bottom;
+    }
+
+    .wave-1 {
+      animation: wave1 11s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
+      background: rgba(255,255,255,0.12);
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,60 C200,120 400,0 600,60 C800,120 1000,0 1200,60 L1200,120 L0,120 Z' fill='white'/%3E%3C/svg%3E");
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,60 C200,120 400,0 600,60 C800,120 1000,0 1200,60 L1200,120 L0,120 Z' fill='white'/%3E%3C/svg%3E");
+      mask-size: 50% 100%;
+      -webkit-mask-size: 50% 100%;
+    }
+
+    .wave-2 {
+      animation: wave2 14s cubic-bezier(0.36, 0.45, 0.63, 0.53) -3s infinite;
+      background: rgba(255,255,255,0.08);
+      opacity: 0.7;
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,40 C300,100 600,20 900,60 C1050,80 1150,40 1200,30 L1200,120 L0,120 Z' fill='white'/%3E%3C/svg%3E");
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,40 C300,100 600,20 900,60 C1050,80 1150,40 1200,30 L1200,120 L0,120 Z' fill='white'/%3E%3C/svg%3E");
+      mask-size: 50% 100%;
+      -webkit-mask-size: 50% 100%;
+    }
+
+    .wave-3 {
+      animation: wave3 17s cubic-bezier(0.36, 0.45, 0.63, 0.53) -6s infinite;
+      background: rgba(255,255,255,0.06);
+      opacity: 0.5;
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,50 C200,20 500,100 800,40 C1000,0 1100,60 1200,50 L1200,120 L0,120 Z' fill='white'/%3E%3C/svg%3E");
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,50 C200,20 500,100 800,40 C1000,0 1100,60 1200,50 L1200,120 L0,120 Z' fill='white'/%3E%3C/svg%3E");
+      mask-size: 50% 100%;
+      -webkit-mask-size: 50% 100%;
+    }
+
+    .glass-card {
+      background: rgba(0,0,0,0.25);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .glass-btn {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .glass-btn:hover {
+      background: rgba(255,255,255,0.25);
+    }
+  </style>
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='5' r='4' fill='%23ffffff'/%3E%3Ccircle cx='7' cy='25' r='4' fill='%23ffffff'/%3E%3Ccircle cx='25' cy='25' r='4' fill='%23ffffff'/%3E%3C/svg%3E" />
+</head>
+<body class="bg-black overflow-x-hidden antialiased">
 
   <!-- Navbar -->
   <nav class="fixed top-0 left-0 right-0 z-50 px-6 sm:px-10 md:px-14 py-4 sm:py-5">
     <div class="flex items-center justify-between">
-      <!-- Logo -->
       <a href="#" class="flex items-center gap-[10px]">
-        <svg viewBox="0 0 256 256" fill="currentColor" class="w-6 h-6 text-[#191919]">
+        <svg viewBox="0 0 256 256" fill="currentColor" class="w-6 h-6 text-white">
           <circle cx="128" cy="42" r="22"/>
           <circle cx="60" cy="178" r="22"/>
           <circle cx="196" cy="178" r="22"/>
@@ -48,103 +131,101 @@
           <line x1="128" y1="64" x2="184" y2="158" stroke="currentColor" stroke-width="2.5" opacity="0.35"/>
           <line x1="82" y1="178" x2="174" y2="178" stroke="currentColor" stroke-width="2.5" opacity="0.35"/>
         </svg>
-        <span class="font-semibold text-base tracking-tight text-[#191919]">Ergo</span>
+        <span class="font-semibold text-base tracking-tight text-white">Ergo</span>
       </a>
 
-      <!-- Center links (hidden on mobile) -->
       <div class="hidden md:flex items-center gap-8">
-        <a href="#how-it-works" class="text-sm text-[#191919]/70 hover:text-[#191919] transition-colors duration-200">How it Works</a>
-        <a href="#features" class="text-sm text-[#191919]/70 hover:text-[#191919] transition-colors duration-200">Features</a>
-        <a href="https://github.com/sentient-agi/ROMA" target="_blank" rel="noopener" class="text-sm text-[#191919]/70 hover:text-[#191919] transition-colors duration-200">ROMA</a>
+        <a href="#how-it-works" class="text-sm text-white/60 hover:text-white transition-colors duration-200">How it Works</a>
+        <a href="#features" class="text-sm text-white/60 hover:text-white transition-colors duration-200">Features</a>
+        <a href="https://github.com/sentient-agi/ROMA" target="_blank" rel="noopener" class="text-sm text-white/60 hover:text-white transition-colors duration-200">ROMA</a>
       </div>
 
-      <!-- CTA -->
-      <a href="roma-research-agent.html" class="px-5 py-2.5 bg-[#191919] text-white text-sm font-medium rounded-lg hover:bg-[#191919]/90 transition-colors duration-200">
+      <a href="roma-research-agent.html" class="px-5 py-2.5 bg-white/15 backdrop-blur-md border border-white/20 text-white text-sm font-medium rounded-lg hover:bg-white/25 transition-all duration-200">
         Launch Ergo
       </a>
     </div>
   </nav>
 
   <!-- Hero Section -->
-  <section class="relative flex flex-col items-center h-screen">
-    <!-- Gradient overlay for text readability -->
-    <div style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;background:linear-gradient(to bottom, rgba(255,255,255,0.35), rgba(255,255,255,0.05) 40%, rgba(255,255,255,0.65) 100%);"></div>
+  <section class="relative flex flex-col items-center h-screen hero-bg overflow-hidden">
+    <!-- Dark overlay -->
+    <div class="absolute inset-0 z-0 bg-gradient-to-b from-black/60 via-black/30 to-black/70"></div>
+
+    <!-- Wave animations -->
+    <div class="absolute bottom-0 left-0 right-0 z-[1] h-32 sm:h-40 md:h-48 overflow-hidden pointer-events-none">
+      <div class="wave wave-1"></div>
+      <div class="wave wave-2"></div>
+      <div class="wave wave-3"></div>
+    </div>
 
     <!-- Hero content -->
     <div class="relative z-10 flex flex-col items-center text-center pt-24 sm:pt-26 md:pt-32 px-4 sm:px-6">
-      <h1 class="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl leading-[1.1] tracking-tighter text-[#191919] font-normal">
+      <h1 class="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl leading-[1.1] tracking-tighter text-white font-normal drop-shadow-lg">
         Research that<br />compounds.
       </h1>
-      <p class="max-w-sm sm:max-w-md mt-5 sm:mt-6 md:mt-8 text-sm md:text-base text-[#191919]/70 leading-relaxed">
+      <p class="max-w-sm sm:max-w-md mt-5 sm:mt-6 md:mt-8 text-sm md:text-base text-white/70 leading-relaxed drop-shadow">
         Recursive research agent built on the ROMA meta-agent pattern. Decomposes hard questions, investigates every piece with live web search, and synthesizes findings into one verifiable report.
       </p>
-      <a href="roma-research-agent.html" class="mt-6 sm:mt-8 md:mt-10 px-6 sm:px-8 py-3 sm:py-3.5 bg-[#191919] text-white text-sm font-medium rounded-lg hover:bg-[#191919]/90 transition-colors duration-200 inline-block">
+      <a href="roma-research-agent.html" class="mt-6 sm:mt-8 md:mt-10 px-6 sm:px-8 py-3 sm:py-3.5 glass-btn text-white text-sm font-medium rounded-lg transition-all duration-200 inline-block">
         Launch Ergo
       </a>
     </div>
 
     <!-- Bottom info panel -->
     <div id="how-it-works" class="relative z-10 w-full max-w-5xl px-4 sm:px-6 mt-auto pb-8 sm:pb-12">
-      <div class="bg-white/90 backdrop-blur-sm border border-gray-200 rounded-t-xl pt-8 sm:pt-12 md:pt-16 px-5 sm:px-8 md:px-12 pb-8 sm:pb-10 shadow-sm">
+      <div class="glass-card rounded-t-xl pt-8 sm:pt-12 md:pt-16 px-5 sm:px-8 md:px-12 pb-8 sm:pb-10">
 
-        <!-- Row 1: What we do -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 lg:gap-16">
           <div>
-            <div class="text-[11px] uppercase tracking-[0.2em] text-[#191919]/50 font-medium">How it works</div>
-            <h2 class="mt-3 text-2xl sm:text-3xl md:text-4xl font-serif font-normal leading-tight tracking-tight">
+            <div class="text-[11px] uppercase tracking-[0.2em] text-white/40 font-medium">How it works</div>
+            <h2 class="mt-3 text-2xl sm:text-3xl md:text-4xl font-serif font-normal leading-tight tracking-tight text-white">
               Decomposition<br class="hidden sm:block" />that thinks deeper.
             </h2>
           </div>
           <div class="flex items-end">
-            <p class="text-sm md:text-[15px] text-[#191919]/70 leading-relaxed">
+            <p class="text-sm md:text-[15px] text-white/60 leading-relaxed">
               Ergo breaks your hardest research questions into smaller pieces, investigates each one independently, and aggregates everything into a clear report. Every leaf node is verified through live web search — not just model recall.
             </p>
           </div>
         </div>
 
-        <!-- Divider -->
-        <div class="mt-6 sm:mt-8 md:mt-10 h-px bg-gray-200 w-full"></div>
+        <div class="mt-6 sm:mt-8 md:mt-10 h-px bg-white/10 w-full"></div>
 
-        <!-- Row 2: Feature items -->
         <div id="features" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[2px] sm:gap-[3px]">
-          <!-- Atomizer -->
-          <a href="roma-research-agent.html" class="group bg-[#F4F3F3] hover:bg-[#eaeaea] transition-all duration-200 px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between rounded-lg sm:rounded-none no-underline">
+          <a href="roma-research-agent.html" class="group bg-white/5 hover:bg-white/10 transition-all duration-200 px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between rounded-lg sm:rounded-none no-underline border border-white/5">
             <div class="flex items-center">
-              <span class="text-[#191919]/40 text-sm">01</span>
-              <span class="mx-2 text-[#191919]/30">/</span>
-              <span class="font-medium text-sm text-[#191919]">Atomizer</span>
+              <span class="text-white/30 text-sm">01</span>
+              <span class="mx-2 text-white/20">/</span>
+              <span class="font-medium text-sm text-white">Atomizer</span>
             </div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-gray-400 group-hover:text-gray-700 group-hover:translate-x-0.5 transition-all duration-200"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-white/30 group-hover:text-white/70 group-hover:translate-x-0.5 transition-all duration-200"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
 
-          <!-- Planner -->
-          <a href="roma-research-agent.html" class="group bg-[#F4F3F3] hover:bg-[#eaeaea] transition-all duration-200 px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between rounded-lg sm:rounded-none no-underline">
+          <a href="roma-research-agent.html" class="group bg-white/5 hover:bg-white/10 transition-all duration-200 px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between rounded-lg sm:rounded-none no-underline border border-white/5">
             <div class="flex items-center">
-              <span class="text-[#191919]/40 text-sm">02</span>
-              <span class="mx-2 text-[#191919]/30">/</span>
-              <span class="font-medium text-sm text-[#191919]">Planner</span>
+              <span class="text-white/30 text-sm">02</span>
+              <span class="mx-2 text-white/20">/</span>
+              <span class="font-medium text-sm text-white">Planner</span>
             </div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-gray-400 group-hover:text-gray-700 group-hover:translate-x-0.5 transition-all duration-200"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-white/30 group-hover:text-white/70 group-hover:translate-x-0.5 transition-all duration-200"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
 
-          <!-- Executor -->
-          <a href="roma-research-agent.html" class="group bg-[#F4F3F3] hover:bg-[#eaeaea] transition-all duration-200 px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between rounded-lg sm:rounded-none no-underline">
+          <a href="roma-research-agent.html" class="group bg-white/5 hover:bg-white/10 transition-all duration-200 px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between rounded-lg sm:rounded-none no-underline border border-white/5">
             <div class="flex items-center">
-              <span class="text-[#191919]/40 text-sm">03</span>
-              <span class="mx-2 text-[#191919]/30">/</span>
-              <span class="font-medium text-sm text-[#191919]">Executor</span>
+              <span class="text-white/30 text-sm">03</span>
+              <span class="mx-2 text-white/20">/</span>
+              <span class="font-medium text-sm text-white">Executor</span>
             </div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-gray-400 group-hover:text-gray-700 group-hover:translate-x-0.5 transition-all duration-200"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-white/30 group-hover:text-white/70 group-hover:translate-x-0.5 transition-all duration-200"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
 
-          <!-- Aggregator -->
-          <a href="roma-research-agent.html" class="group bg-[#F4F3F3] hover:bg-[#eaeaea] transition-all duration-200 px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between rounded-lg sm:rounded-none no-underline">
+          <a href="roma-research-agent.html" class="group bg-white/5 hover:bg-white/10 transition-all duration-200 px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between rounded-lg sm:rounded-none no-underline border border-white/5">
             <div class="flex items-center">
-              <span class="text-[#191919]/40 text-sm">04</span>
-              <span class="mx-2 text-[#191919]/30">/</span>
-              <span class="font-medium text-sm text-[#191919]">Aggregator</span>
+              <span class="text-white/30 text-sm">04</span>
+              <span class="mx-2 text-white/20">/</span>
+              <span class="font-medium text-sm text-white">Aggregator</span>
             </div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-gray-400 group-hover:text-gray-700 group-hover:translate-x-0.5 transition-all duration-200"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-white/30 group-hover:text-white/70 group-hover:translate-x-0.5 transition-all duration-200"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
         </div>
       </div>
@@ -152,118 +233,6 @@
   </section>
 
   <script>
-  (function() {
-    var canvas = document.getElementById('ergo-canvas');
-    var ctx = canvas.getContext('2d');
-
-    var w, h;
-    var trees = [];
-    var lastSpawn = 0;
-    var SPAWN_MS = 2600;
-    var MAX = 5;
-
-    function resize() {
-      w = window.innerWidth;
-      h = window.innerHeight;
-      canvas.width = w;
-      canvas.height = h;
-      canvas.style.width = w + 'px';
-      canvas.style.height = h + 'px';
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-    }
-
-    function newTree() {
-      var rx = 80 + Math.random() * (w - 160);
-      var ry = 50 + Math.random() * h * 0.35;
-      var n = 2 + Math.floor(Math.random() * 3);
-      var kids = [];
-      for (var i = 0; i < n; i++) {
-        var frac = n === 1 ? 0.5 : i / (n - 1);
-        var side = i % 2 === 0 ? -1 : 1;
-        var dx = (60 + Math.random() * 120) * side * (0.6 + Math.random() * 0.8);
-        var dy = 50 + Math.random() * 90;
-        kids.push({
-          x: Math.max(20, Math.min(w - 20, rx + dx)),
-          y: Math.max(20, Math.min(h - 20, ry + dy)),
-          r: 3 + Math.random() * 5
-        });
-      }
-      return { rx: rx, ry: ry, kids: kids, born: performance.now(), life: 3400 + Math.random() * 2400 };
-    }
-
-    function draw(t, now) {
-      var p = Math.min(1, (now - t.born) / t.life);
-      // rise + fall
-      var a = p < 0.35 ? p / 0.35 : Math.max(0, 1 - (p - 0.35) / 0.65);
-
-      // root glow
-      ctx.beginPath();
-      ctx.arc(t.rx, t.ry, 14, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(224,169,78,' + (a * 0.18).toFixed(3) + ')';
-      ctx.fill();
-
-      // root
-      ctx.beginPath();
-      ctx.arc(t.rx, t.ry, 5, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(224,169,78,' + (a * 0.55).toFixed(3) + ')';
-      ctx.fill();
-
-      // children
-      var cp = Math.max(0, (p - 0.08) / 0.92);
-      var ca = cp < 0.3 ? cp / 0.3 : Math.max(0, 1 - (cp - 0.3) / 0.7);
-
-      for (var i = 0; i < t.kids.length; i++) {
-        var k = t.kids[i];
-
-        // line
-        ctx.beginPath();
-        ctx.moveTo(t.rx, t.ry);
-        ctx.lineTo(k.x, k.y);
-        ctx.strokeStyle = 'rgba(150,170,145,' + (ca * 0.25).toFixed(3) + ')';
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-
-        // child glow
-        ctx.beginPath();
-        ctx.arc(k.x, k.y, k.r * 2.5, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(95,184,148,' + (ca * 0.14).toFixed(3) + ')';
-        ctx.fill();
-
-        // child
-        ctx.beginPath();
-        ctx.arc(k.x, k.y, k.r, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(95,184,148,' + (ca * 0.48).toFixed(3) + ')';
-        ctx.fill();
-      }
-    }
-
-    function loop(now) {
-      ctx.clearRect(0, 0, w, h);
-
-      if (trees.length < MAX && now - lastSpawn > SPAWN_MS) {
-        trees.push(newTree());
-        lastSpawn = now;
-      }
-
-      for (var i = trees.length - 1; i >= 0; i--) {
-        if (now - trees[i].born > trees[i].life + 700) {
-          trees.splice(i, 1);
-        } else {
-          draw(trees[i], now);
-        }
-      }
-
-      requestAnimationFrame(loop);
-    }
-
-    resize();
-
-    trees.push(newTree());
-    trees.push(newTree());
-    lastSpawn = performance.now();
-    window.addEventListener('resize', resize);
-    requestAnimationFrame(loop);
-
     // Smooth scroll for nav links
     document.querySelectorAll('a[href^="#"]').forEach(function(a) {
       a.addEventListener('click', function(e) {
@@ -272,7 +241,7 @@
         if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     });
-  })();
   </script>
+
 </body>
 </html>
