@@ -39,15 +39,6 @@
       animation: kenburns 20s ease-in-out infinite alternate;
     }
 
-    body::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      z-index: -1;
-      background: rgba(0,0,0,0.55);
-      pointer-events: none;
-    }
-
     @keyframes kenburns {
       0%   { transform: scale(1); }
       100% { transform: scale(1.05); }
@@ -582,6 +573,7 @@
 
   <!-- Hero Section -->
   <section class="relative flex flex-col items-center h-screen overflow-hidden">
+    <div class="absolute inset-0 z-0 bg-gradient-to-b from-black/60 via-black/30 to-black/80"></div>
 
     <div class="fixed bottom-0 left-0 right-0 z-50 h-32 sm:h-40 md:h-48 overflow-hidden pointer-events-none">
       <div class="wave wave-1"></div>
@@ -658,7 +650,7 @@
   </section>
 
   <!-- Research Agent Section -->
-  <section id="agent" class="agent-section">
+  <section id="agent" class="agent-section" style="position:relative;z-index:1;background:rgba(5,5,8,0.7);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);">
     <div class="agent-shell">
       <div class="agent-eyebrow">Atomizer → Planner → Executor → Aggregator</div>
       <h2 class="agent-title">Research Agent</h2>
