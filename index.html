@@ -861,7 +861,7 @@
       toggleProviderFields();
     }
 
-    [dsKeyInput, searchKeyInput, endpointInput, modelInput, customKeyInput, ollamaModelInput].forEach(function(el) {
+    [searchKeyInput, endpointInput, modelInput, customKeyInput, ollamaModelInput].forEach(function(el) {
       el.addEventListener('input', function() {
         sessionStorage.setItem('ergo_ds_key', dsKeyInput.value.trim());
         sessionStorage.setItem('ergo_search_key', searchKeyInput.value.trim());
