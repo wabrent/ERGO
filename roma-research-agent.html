@@ -11,23 +11,23 @@
 
   <style>
     :root {
-      --bg: #FFFFFF;
-      --surface: #F9F9F9;
-      --surface-hover: #F0F0F0;
-      --line: #E5E5E5;
-      --line-strong: #D0D0D0;
-      --text: #191919;
-      --text-muted: rgba(25,25,25,0.55);
-      --text-faint: rgba(25,25,25,0.35);
+      --bg: #0a0a0a;
+      --surface: rgba(255,255,255,0.04);
+      --surface-hover: rgba(255,255,255,0.08);
+      --line: rgba(255,255,255,0.08);
+      --line-strong: rgba(255,255,255,0.15);
+      --text: #ffffff;
+      --text-muted: rgba(255,255,255,0.55);
+      --text-faint: rgba(255,255,255,0.3);
       --amber: #e0a94e;
-      --amber-bg: rgba(224,169,78,0.08);
-      --amber-border: rgba(224,169,78,0.25);
+      --amber-bg: rgba(224,169,78,0.12);
+      --amber-border: rgba(224,169,78,0.3);
       --teal: #5fb894;
-      --teal-bg: rgba(95,184,148,0.08);
-      --teal-border: rgba(95,184,148,0.25);
+      --teal-bg: rgba(95,184,148,0.12);
+      --teal-border: rgba(95,184,148,0.3);
       --red: #d9705f;
-      --red-bg: rgba(217,112,95,0.06);
-      --red-border: rgba(217,112,95,0.3);
+      --red-bg: rgba(217,112,95,0.1);
+      --red-border: rgba(217,112,95,0.35);
       --font-display: 'Playfair Display', Georgia, serif;
       --font-body: 'Inter', -apple-system, sans-serif;
       --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
@@ -37,17 +37,28 @@
 
     body {
       margin: 0;
-      background: var(--bg);
+      background: #000;
       color: var(--text);
       font-family: var(--font-body);
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
 
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background: url('146714-chernyy-volna-belye-more-minimalizm-3840x2160.jpg') center/cover no-repeat;
+      opacity: 0.5;
+    }
+
     .ergo-app {
       min-height: 100vh;
       padding: 40px 24px 100px;
       line-height: 1.6;
+      position: relative;
+      z-index: 0;
     }
 
     .ergo-shell { max-width: 780px; margin: 0 auto; }
@@ -78,13 +89,9 @@
       line-height: 1.55;
     }
 
-    /* Settings */
     .ergo-settings-toggle {
-      font-family: var(--font-mono);
-      font-size: 10.5px;
-      color: var(--text-faint);
       cursor: pointer;
-      background: none;
+      background: var(--surface);
       border: 1px solid var(--line);
       border-radius: 8px;
       padding: 6px 14px;
@@ -92,17 +99,19 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: border-color .15s, color .15s;
+      transition: border-color .15s, color .15s, background .15s;
       font-family: var(--font-body);
       font-size: 12px;
       color: var(--text-muted);
     }
-    .ergo-settings-toggle:hover { border-color: var(--line-strong); color: var(--text); }
+    .ergo-settings-toggle:hover { border-color: var(--line-strong); color: var(--text); background: var(--surface-hover); }
 
     .ergo-settings-panel {
       display: none;
-      background: var(--surface);
-      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.08);
       border-radius: 12px;
       padding: 18px 20px;
       margin-bottom: 24px;
@@ -127,8 +136,8 @@
 
     .ergo-settings-input {
       width: 100%;
-      background: #fff;
-      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
       border-radius: 8px;
       padding: 9px 12px;
       color: var(--text);
@@ -143,8 +152,8 @@
     .ergo-settings-num {
       width: 52px;
       text-align: center;
-      background: #fff;
-      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
       border-radius: 8px;
       padding: 8px 4px;
       color: var(--text);
@@ -157,13 +166,12 @@
 
     .ergo-settings-inline { display: flex; align-items: center; gap: 8px; }
 
-    /* Form */
     .ergo-formrow { display: flex; gap: 10px; margin-bottom: 8px; }
 
     .ergo-input {
       flex: 1;
-      background: #fff;
-      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
       border-radius: 12px;
       padding: 14px 18px;
       color: var(--text);
@@ -176,23 +184,24 @@
     .ergo-input::placeholder { color: var(--text-faint); }
 
     .ergo-btn {
-      background: #191919;
+      background: rgba(255,255,255,0.12);
       color: #fff;
-      border: none;
+      border: 1px solid rgba(255,255,255,0.15);
       border-radius: 12px;
       padding: 0 24px;
       font-family: var(--font-body);
       font-weight: 500;
       font-size: 14px;
       cursor: pointer;
-      transition: opacity .15s, transform .1s;
+      transition: background .15s, transform .1s;
       white-space: nowrap;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
-    .ergo-btn:hover:not(:disabled) { opacity: 0.9; }
+    .ergo-btn:hover:not(:disabled) { background: rgba(255,255,255,0.2); }
     .ergo-btn:active:not(:disabled) { transform: scale(0.98); }
-    .ergo-btn:disabled { background: var(--surface); color: var(--text-faint); cursor: not-allowed; border: 1px solid var(--line); }
+    .ergo-btn:disabled { background: rgba(255,255,255,0.04); color: var(--text-faint); cursor: not-allowed; border-color: rgba(255,255,255,0.06); }
 
-    /* Presets */
     .ergo-presets { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 40px; }
     .ergo-preset {
       font-size: 12px;
@@ -202,11 +211,10 @@
       border-radius: 999px;
       padding: 6px 14px;
       cursor: pointer;
-      transition: border-color .15s, color .15s;
+      transition: border-color .15s, color .15s, background .15s;
     }
-    .ergo-preset:hover { border-color: var(--line-strong); color: var(--text); }
+    .ergo-preset:hover { border-color: var(--line-strong); color: var(--text); background: var(--surface-hover); }
 
-    /* Flow label */
     .ergo-flow-label {
       font-size: 10px;
       letter-spacing: 0.14em;
@@ -221,7 +229,6 @@
     }
     .ergo-flow-label::after { content:""; flex:1; height:1px; background: var(--line); }
 
-    /* Tree */
     .ergo-tree { position: relative; }
 
     .ergo-node {
@@ -233,13 +240,15 @@
     .ergo-node.root { border-left: none; padding-left: 0; }
 
     .ergo-node-body {
-      background: #fff;
-      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.06);
       border-radius: 12px;
       padding: 16px 18px;
       margin-bottom: 10px;
       position: relative;
-      transition: border-color .3s, box-shadow .3s;
+      transition: border-color .3s, box-shadow .3s, background .3s;
     }
     .ergo-node-body.status-done {
       border-color: var(--teal-border);
@@ -252,6 +261,7 @@
     .ergo-node-body.active {
       border-color: var(--amber-border);
       box-shadow: 0 0 0 2px var(--amber-bg);
+      background: rgba(224,169,78,0.06);
     }
 
     .ergo-node-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
@@ -263,7 +273,7 @@
       text-transform: uppercase;
       padding: 3px 8px;
       border-radius: 5px;
-      background: var(--surface);
+      background: rgba(255,255,255,0.06);
       color: var(--text-muted);
       white-space: nowrap;
       flex-shrink: 0;
@@ -271,7 +281,7 @@
     }
     .ergo-badge.atomizer { color: var(--amber); background: var(--amber-bg); }
     .ergo-badge.planner { color: var(--amber); background: var(--amber-bg); }
-    .ergo-badge.executor { color: #5b8cc9; background: rgba(91,140,201,0.08); }
+    .ergo-badge.executor { color: #7aafed; background: rgba(122,175,237,0.12); }
     .ergo-badge.aggregator { color: var(--teal); background: var(--teal-bg); }
     .ergo-badge.done { color: var(--teal); background: var(--teal-bg); }
     .ergo-badge.error { color: var(--red); background: var(--red-bg); }
@@ -301,14 +311,14 @@
 
     .ergo-children { margin-left: 8px; }
 
-    /* Report */
     .ergo-report {
       margin-top: 36px;
-      background: #fff;
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--amber-border);
       border-radius: 16px;
       padding: 32px 34px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
     }
     .ergo-report-label {
       font-size: 10px;
@@ -345,7 +355,7 @@
     .ergo-error-banner {
       background: var(--red-bg);
       border: 1px solid var(--red-border);
-      color: var(--red);
+      color: #f0b3a8;
       border-radius: 12px;
       padding: 14px 18px;
       font-size: 13.5px;
@@ -360,7 +370,6 @@
       text-align: center;
     }
 
-    /* Back link */
     .ergo-back {
       font-size: 12px;
       color: var(--text-faint);
