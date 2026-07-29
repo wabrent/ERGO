@@ -680,8 +680,10 @@
             </div>
           </div>
           <div class="agent-ds-fields" style="grid-column:span 2;">
-            <div class="agent-label">DeepSeek API Key<span style="color:var(--red);margin-left:2px;">*</span></div>
-            <input id="agent-ds-key" class="agent-input" type="password" placeholder="sk-..." autocomplete="off" />
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="width:8px;height:8px;border-radius:50%;background:var(--teal);flex-shrink:0;"></span>
+              <span style="color:rgba(255,255,255,0.5);font-size:12px;">Connected via server key — no input needed</span>
+            </div>
           </div>
           <div class="agent-ollama-fields" style="display:none;grid-column:span 2;">
             <div class="agent-label">Model Name</div>
@@ -762,7 +764,7 @@
     var providerSelect = document.getElementById('agent-provider-btn');
     var providerMenu = document.getElementById('agent-provider-menu');
     var providerDropdown = document.getElementById('agent-provider-dropdown');
-    var dsKeyInput = document.getElementById('agent-ds-key');
+    var dsKeyInput = document.getElementById('agent-ds-key') || { value: '' };
     var dsFields = document.querySelectorAll('.agent-ds-fields');
     var ollamaModelInput = document.getElementById('agent-ollama-model');
     var ollamaFields = document.querySelectorAll('.agent-ollama-fields');
