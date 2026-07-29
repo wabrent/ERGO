@@ -230,6 +230,69 @@
       cursor: pointer;
     }
 
+    /* Custom dropdown */
+    .agent-dropdown {
+      position: relative;
+      width: 100%;
+    }
+    .agent-dropdown-btn {
+      width: 100%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 9px 32px 9px 12px;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      outline: none;
+      cursor: pointer;
+      text-align: left;
+      transition: border-color .15s;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(255,255,255,0.4)'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+    .agent-dropdown-btn:focus { border-color: var(--amber); }
+    .agent-dropdown-btn.open { border-color: var(--amber); border-radius: 8px 8px 0 0; }
+
+    .agent-dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      z-index: 60;
+      background: #1a1a1e;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    }
+    .agent-dropdown-menu.open { display: block; }
+
+    .agent-dropdown-option {
+      padding: 10px 14px;
+      color: rgba(255,255,255,0.65);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background .12s, color .12s;
+    }
+    .agent-dropdown-option:first-child { border-radius: 0; }
+    .agent-dropdown-option:last-child { border-radius: 0 0 8px 8px; }
+    .agent-dropdown-option:hover {
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+    }
+    .agent-dropdown-option.selected {
+      color: var(--amber);
+      background: var(--amber-bg);
+    }
+
     .agent-num {
       width: 52px;
       text-align: center;
@@ -589,10 +652,13 @@
         <div class="agent-settings-grid">
           <div style="grid-column: span 2;">
             <div class="agent-label">AI Provider</div>
-            <select id="agent-provider" class="agent-input">
-              <option value="deepseek">DeepSeek</option>
-              <option value="custom">Custom provider…</option>
-            </select>
+            <div class="agent-dropdown" id="agent-provider-dropdown">
+              <button class="agent-dropdown-btn" id="agent-provider-btn" type="button">DeepSeek</button>
+              <div class="agent-dropdown-menu" id="agent-provider-menu">
+                <div class="agent-dropdown-option selected" data-value="deepseek">DeepSeek</div>
+                <div class="agent-dropdown-option" data-value="custom">Custom provider…</div>
+              </div>
+            </div>
           </div>
           <div class="agent-ds-fields" style="grid-column:span 2;">
             <div class="agent-label">DeepSeek API Key<span style="color:var(--red);margin-left:2px;">*</span></div>
@@ -669,7 +735,9 @@
     var flowLabel = document.getElementById('agent-flow-label');
     var settingsToggle = document.getElementById('agent-settings-toggle');
     var settingsPanel = document.getElementById('agent-settings-panel');
-    var providerSelect = document.getElementById('agent-provider');
+    var providerSelect = document.getElementById('agent-provider-btn');
+    var providerMenu = document.getElementById('agent-provider-menu');
+    var providerDropdown = document.getElementById('agent-provider-dropdown');
     var dsKeyInput = document.getElementById('agent-ds-key');
     var dsFields = document.querySelectorAll('.agent-ds-fields');
     var endpointInput = document.getElementById('agent-endpoint');
@@ -683,10 +751,47 @@
     var DEEPSEEK_ENDPOINT = 'https://api.deepseek.com/chat/completions';
     var DEEPSEEK_MODEL = 'deepseek-chat';
 
+    function getProviderValue() {
+      var sel = providerMenu.querySelector('.agent-dropdown-option.selected');
+      return sel ? sel.dataset.value : 'deepseek';
+    }
+
+    function setProviderValue(val) {
+      providerMenu.querySelectorAll('.agent-dropdown-option').forEach(function(opt) {
+        opt.classList.toggle('selected', opt.dataset.value === val);
+      });
+      providerSelect.textContent = val === 'custom' ? 'Custom provider…' : 'DeepSeek';
+    }
+
+    // Dropdown toggle
+    providerSelect.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var open = providerMenu.classList.toggle('open');
+      providerSelect.classList.toggle('open', open);
+    });
+
+    // Option click
+    providerMenu.querySelectorAll('.agent-dropdown-option').forEach(function(opt) {
+      opt.addEventListener('click', function(e) {
+        e.stopPropagation();
+        setProviderValue(this.dataset.value);
+        providerMenu.classList.remove('open');
+        providerSelect.classList.remove('open');
+        toggleProviderFields();
+        sessionStorage.setItem('ergo_provider', getProviderValue());
+      });
+    });
+
+    // Close on outside click
+    document.addEventListener('click', function() {
+      providerMenu.classList.remove('open');
+      providerSelect.classList.remove('open');
+    });
+
     function getSearchKey() { return searchKeyInput.value.trim(); }
 
     function getProviderConfig() {
-      if (providerSelect.value === 'deepseek') {
+      if (getProviderValue() === 'deepseek') {
         return { endpoint: DEEPSEEK_ENDPOINT, model: DEEPSEEK_MODEL, apiKey: dsKeyInput.value.trim() };
       }
       return {
@@ -697,15 +802,10 @@
     }
 
     function toggleProviderFields() {
-      var isCustom = providerSelect.value === 'custom';
+      var isCustom = getProviderValue() === 'custom';
       dsFields.forEach(function(el) { el.style.display = isCustom ? 'none' : ''; });
       customFields.forEach(function(el) { el.style.display = isCustom ? '' : 'none'; });
     }
-
-    providerSelect.addEventListener('change', function() {
-      toggleProviderFields();
-      sessionStorage.setItem('ergo_provider', providerSelect.value);
-    });
 
     settingsToggle.addEventListener('click', function() {
       settingsPanel.classList.toggle('open');
@@ -721,7 +821,7 @@
       var mod = sessionStorage.getItem('ergo_model');
       var ck = sessionStorage.getItem('ergo_custom_key');
 
-      providerSelect.value = prov;
+      setProviderValue(prov);
       if (dk) dsKeyInput.value = dk;
       if (sk) searchKeyInput.value = sk;
       if (md) maxDepthInput.value = md;
