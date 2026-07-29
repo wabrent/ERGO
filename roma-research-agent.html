@@ -146,6 +146,14 @@
       outline: none;
       transition: border-color .15s;
     }
+    select.ergo-settings-input {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(255,255,255,0.4)'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+    }
     .ergo-settings-input:focus { border-color: var(--amber); }
     .ergo-settings-input::placeholder { color: var(--text-faint); }
 
@@ -425,14 +433,36 @@
 
     <div class="ergo-settings-panel" id="ergo-settings-panel">
       <div class="ergo-settings-grid">
-        <div>
+        <div style="grid-column: span 2;">
+          <div class="ergo-settings-label">AI Provider</div>
+          <select id="ergo-provider" class="ergo-settings-input" style="cursor:pointer;">
+            <option value="deepseek">DeepSeek</option>
+            <option value="custom">Custom provider…</option>
+          </select>
+        </div>
+        <!-- DeepSeek fields -->
+        <div class="ergo-ds-fields" style="grid-column:span 2;">
           <div class="ergo-settings-label">DeepSeek API Key<span style="color:var(--red);margin-left:2px;">*</span></div>
           <input id="ergo-ds-key" class="ergo-settings-input" type="password" placeholder="sk-..." autocomplete="off" />
+        </div>
+        <!-- Custom fields -->
+        <div class="ergo-custom-fields" style="display:none;grid-column:span 2;">
+          <div class="ergo-settings-label">API Endpoint</div>
+          <input id="ergo-endpoint" class="ergo-settings-input" type="text" placeholder="https://api.deepseek.com/chat/completions" autocomplete="off" />
+        </div>
+        <div class="ergo-custom-fields" style="display:none;">
+          <div class="ergo-settings-label">Model Name</div>
+          <input id="ergo-model" class="ergo-settings-input" type="text" placeholder="deepseek-chat" autocomplete="off" />
+        </div>
+        <div class="ergo-custom-fields" style="display:none;">
+          <div class="ergo-settings-label">API Key<span style="color:var(--red);margin-left:2px;">*</span></div>
+          <input id="ergo-custom-key" class="ergo-settings-input" type="password" placeholder="sk-..." autocomplete="off" />
         </div>
         <div>
           <div class="ergo-settings-label">Search API Key (Serper.dev)</div>
           <input id="ergo-search-key" class="ergo-settings-input" type="password" placeholder="optional — for live web search" autocomplete="off" />
         </div>
+        <div></div>
         <div>
           <div class="ergo-settings-label">Max Recursion Depth</div>
           <div class="ergo-settings-inline">
@@ -461,7 +491,7 @@
     <div id="ergo-error"></div>
     <div id="ergo-report"></div>
 
-    <div class="ergo-footer-note">Powered by DeepSeek Chat · Live search via Serper.dev (function calling)</div>
+    <div class="ergo-footer-note">Multi-provider AI · Web search via Serper.dev (function calling) · Built on ROMA</div>
   </div>
 </div>
 
@@ -476,36 +506,84 @@
   const flowLabel = document.getElementById('ergo-flow-label');
   const settingsToggle = document.getElementById('ergo-settings-toggle');
   const settingsPanel = document.getElementById('ergo-settings-panel');
+  const providerSelect = document.getElementById('ergo-provider');
   const dsKeyInput = document.getElementById('ergo-ds-key');
+  const dsFields = document.querySelectorAll('.ergo-ds-fields');
+  const endpointInput = document.getElementById('ergo-endpoint');
+  const modelInput = document.getElementById('ergo-model');
+  const customKeyInput = document.getElementById('ergo-custom-key');
+  const customFields = document.querySelectorAll('.ergo-custom-fields');
   const searchKeyInput = document.getElementById('ergo-search-key');
   const maxDepthInput = document.getElementById('ergo-max-depth');
   const maxLeavesInput = document.getElementById('ergo-max-leaves');
 
-  function getDsKey() { return dsKeyInput.value.trim(); }
+  const DEEPSEEK_ENDPOINT = 'https://api.deepseek.com/chat/completions';
+  const DEEPSEEK_MODEL = 'deepseek-chat';
+
   function getSearchKey() { return searchKeyInput.value.trim(); }
+
+  function getProviderConfig() {
+    const provider = providerSelect.value;
+    if (provider === 'deepseek') {
+      return {
+        endpoint: DEEPSEEK_ENDPOINT,
+        model: DEEPSEEK_MODEL,
+        apiKey: dsKeyInput.value.trim()
+      };
+    }
+    return {
+      endpoint: endpointInput.value.trim() || DEEPSEEK_ENDPOINT,
+      model: modelInput.value.trim() || 'deepseek-chat',
+      apiKey: customKeyInput.value.trim()
+    };
+  }
+
+  function toggleProviderFields() {
+    const isCustom = providerSelect.value === 'custom';
+    dsFields.forEach(el => { el.style.display = isCustom ? 'none' : ''; });
+    customFields.forEach(el => { el.style.display = isCustom ? '' : 'none'; });
+  }
+
+  providerSelect.addEventListener('change', () => {
+    toggleProviderFields();
+    sessionStorage.setItem('ergo_provider', providerSelect.value);
+  });
 
   settingsToggle.addEventListener('click', () => {
     settingsPanel.classList.toggle('open');
   });
 
   function restoreSettings() {
+    const prov = sessionStorage.getItem('ergo_provider') || 'deepseek';
     const dk = sessionStorage.getItem('ergo_ds_key');
     const sk = sessionStorage.getItem('ergo_search_key');
     const md = sessionStorage.getItem('ergo_max_depth');
     const ml = sessionStorage.getItem('ergo_max_leaves');
+    const ep = sessionStorage.getItem('ergo_endpoint');
+    const mod = sessionStorage.getItem('ergo_model');
+    const ck = sessionStorage.getItem('ergo_custom_key');
+
+    providerSelect.value = prov;
     if (dk) dsKeyInput.value = dk;
     if (sk) searchKeyInput.value = sk;
     if (md) maxDepthInput.value = md;
     if (ml) maxLeavesInput.value = ml;
-    if (dk && settingsPanel) {
+    if (ep) endpointInput.value = ep;
+    if (mod) modelInput.value = mod;
+    if (ck) customKeyInput.value = ck;
+    toggleProviderFields();
+    if (settingsPanel) {
       settingsPanel.classList.add('open');
     }
   }
 
-  [dsKeyInput, searchKeyInput].forEach(el => {
+  [dsKeyInput, searchKeyInput, endpointInput, modelInput, customKeyInput].forEach(el => {
     el.addEventListener('input', () => {
       sessionStorage.setItem('ergo_ds_key', dsKeyInput.value.trim());
       sessionStorage.setItem('ergo_search_key', searchKeyInput.value.trim());
+      sessionStorage.setItem('ergo_endpoint', endpointInput.value.trim());
+      sessionStorage.setItem('ergo_model', modelInput.value.trim());
+      sessionStorage.setItem('ergo_custom_key', customKeyInput.value.trim());
     });
   });
 
@@ -573,27 +651,27 @@
     return { query, results, totalFound: organic.length };
   }
 
-  async function callDeepSeek({system, user, tools, max_tokens}) {
-    const dsKey = getDsKey();
-    if (!dsKey) throw new Error("DeepSeek API key not set — open Settings and enter your key");
+  async function callModel({system, user, tools, max_tokens}) {
+    const cfg = getProviderConfig();
+    if (!cfg.apiKey) throw new Error("API key not set — open Settings and configure your provider");
 
     const messages = [];
     if (system) messages.push({ role:"system", content:system });
     messages.push({ role:"user", content:user });
 
-    const headers = { "Content-Type":"application/json", "Authorization":"Bearer "+dsKey };
-    const body = { model:"deepseek-chat", messages, max_tokens:max_tokens||1000, stream:false };
+    const headers = { "Content-Type":"application/json", "Authorization":"Bearer "+cfg.apiKey };
+    const body = { model: cfg.model, messages, max_tokens:max_tokens||1000, stream:false };
     if (tools && tools.length) body.tools = tools;
 
-    const resp1 = await fetch("https://api.deepseek.com/chat/completions", { method:"POST", headers, body:JSON.stringify(body) });
+    const resp1 = await fetch(cfg.endpoint, { method:"POST", headers, body:JSON.stringify(body) });
     if (!resp1.ok) {
       const t = await resp1.text().catch(()=>'');
       let detail = t; try { const j = JSON.parse(t); detail = j.error?.message||t; } catch(e){}
-      throw new Error("DeepSeek API error "+resp1.status+": "+detail.slice(0,300));
+      throw new Error("API error "+resp1.status+": "+detail.slice(0,300));
     }
     const data1 = await resp1.json();
     const choice1 = data1.choices && data1.choices[0];
-    if (!choice1||!choice1.message) throw new Error("Empty response from DeepSeek API");
+    if (!choice1||!choice1.message) throw new Error("Empty response from API");
     const msg1 = choice1.message;
 
     if (msg1.tool_calls && msg1.tool_calls.length) {
@@ -608,14 +686,14 @@
         }
         messages.push({ role:"tool", tool_call_id:tc.id, content:toolResult });
       }
-      const resp2 = await fetch("https://api.deepseek.com/chat/completions", {
+      const resp2 = await fetch(cfg.endpoint, {
         method:"POST", headers,
-        body:JSON.stringify({ model:"deepseek-chat", messages, max_tokens:max_tokens||1000, stream:false })
+        body:JSON.stringify({ model: cfg.model, messages, max_tokens:max_tokens||1000, stream:false })
       });
       if (!resp2.ok) {
         const t = await resp2.text().catch(()=>'');
         let detail = t; try { const j=JSON.parse(t); detail=j.error?.message||t; } catch(e){}
-        throw new Error("DeepSeek API error (follow-up) "+resp2.status+": "+detail.slice(0,300));
+        throw new Error("API error (follow-up) "+resp2.status+": "+detail.slice(0,300));
       }
       const data2 = await resp2.json();
       const choice2 = data2.choices && data2.choices[0];
@@ -625,7 +703,7 @@
   }
 
   async function callAtomizer(task) {
-    const raw = await callDeepSeek({
+    const raw = await callModel({
       system: "You decide whether a research question is simple enough to answer directly (atomic), or complex enough that it should be split into distinct sub-questions. Respond with ONLY raw JSON: {\"is_atomic\":boolean,\"reason\":string}. Bias towards atomic.",
       user: task, max_tokens: 300
     });
@@ -634,7 +712,7 @@
   }
 
   async function callPlanner(task) {
-    const raw = await callDeepSeek({
+    const raw = await callModel({
       system: "Break the research question into 2-4 distinct, non-overlapping sub-questions. Respond with ONLY raw JSON: {\"subtasks\":[string,...]}. Each subtask should be answerable on its own.",
       user: task, max_tokens: 400
     });
@@ -647,7 +725,7 @@
 
   async function callExecutor(task) {
     const hasSearch = !!getSearchKey();
-    return await callDeepSeek({
+    return await callModel({
       system: hasSearch
         ? "You are a focused research sub-agent. Use the web_search tool to investigate the question, then give a concise, well-grounded answer (3-6 sentences). Paraphrase, do not quote verbatim. Note where evidence is mixed."
         : "You are a focused research sub-agent. Give a concise, well-grounded answer (3-6 sentences). You do NOT have live web search — your answer reflects your training cutoff only. Note this limitation explicitly.",
@@ -659,7 +737,7 @@
 
   async function callAggregator(parentTask, childPairs) {
     const findings = childPairs.map((c,i)=>`${i+1}. ${c.task}\n   Finding: ${c.result}`).join("\n\n");
-    return await callDeepSeek({
+    return await callModel({
       system: "Synthesize the sub-findings below into one coherent, well-organized answer to the parent question. Resolve overlaps, note disagreements. Write in clear prose.",
       user: `Parent question: ${parentTask}\n\nSub-findings:\n${findings}`,
       max_tokens: 1000
@@ -751,8 +829,8 @@
   async function run() {
     const q = qInput.value.trim();
     if (!q) return;
-    if (!getDsKey()) {
-      errorEl.innerHTML = '<div class="ergo-error-banner">Open Settings and enter your DeepSeek API key first.</div>';
+    if (!getProviderConfig().apiKey) {
+      errorEl.innerHTML = '<div class="ergo-error-banner">Open Settings and configure your AI provider first.</div>';
       settingsPanel.classList.add('open');
       return;
     }
