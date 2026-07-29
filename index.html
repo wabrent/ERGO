@@ -28,7 +28,11 @@
     html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
     body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
 
-    .hero-bg {
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -1;
       background-image: url('146714-chernyy-volna-belye-more-minimalizm-3840x2160.jpg');
       background-size: cover;
       background-position: center;
@@ -538,7 +542,7 @@
 
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='5' r='4' fill='%23ffffff'/%3E%3Ccircle cx='7' cy='25' r='4' fill='%23ffffff'/%3E%3Ccircle cx='25' cy='25' r='4' fill='%23ffffff'/%3E%3C/svg%3E" />
 </head>
-<body class="bg-black overflow-x-hidden antialiased">
+<body class="overflow-x-hidden antialiased" style="background:#000;">
 
   <!-- Navbar -->
   <nav class="fixed top-0 left-0 right-0 z-50 px-6 sm:px-10 md:px-14 py-4 sm:py-5">
@@ -568,7 +572,7 @@
   </nav>
 
   <!-- Hero Section -->
-  <section class="relative flex flex-col items-center h-screen hero-bg overflow-hidden">
+  <section class="relative flex flex-col items-center h-screen overflow-hidden">
     <div class="absolute inset-0 z-0 bg-gradient-to-b from-black/60 via-black/30 to-black/70"></div>
 
     <div class="absolute bottom-0 left-0 right-0 z-[1] h-32 sm:h-40 md:h-48 overflow-hidden pointer-events-none">
