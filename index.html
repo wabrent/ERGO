@@ -674,6 +674,7 @@
               <button class="agent-dropdown-btn" id="agent-provider-btn" type="button">DeepSeek</button>
               <div class="agent-dropdown-menu" id="agent-provider-menu">
                 <div class="agent-dropdown-option selected" data-value="deepseek">DeepSeek</div>
+                <div class="agent-dropdown-option" data-value="ollama">Local — Ollama (open-weight)</div>
                 <div class="agent-dropdown-option" data-value="custom">Custom provider…</div>
               </div>
             </div>
@@ -681,6 +682,11 @@
           <div class="agent-ds-fields" style="grid-column:span 2;">
             <div class="agent-label">DeepSeek API Key<span style="color:var(--red);margin-left:2px;">*</span></div>
             <input id="agent-ds-key" class="agent-input" type="password" placeholder="sk-..." autocomplete="off" />
+          </div>
+          <div class="agent-ollama-fields" style="display:none;grid-column:span 2;">
+            <div class="agent-label">Model Name</div>
+            <input id="agent-ollama-model" class="agent-input" type="text" placeholder="llama3.1:8b" autocomplete="off" />
+            <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-top:4px;">Requires Ollama running locally. <code style="color:var(--amber);">ollama serve</code></div>
           </div>
           <div class="agent-custom-fields" style="display:none;grid-column:span 2;">
             <div class="agent-label">API Endpoint</div>
@@ -758,6 +764,8 @@
     var providerDropdown = document.getElementById('agent-provider-dropdown');
     var dsKeyInput = document.getElementById('agent-ds-key');
     var dsFields = document.querySelectorAll('.agent-ds-fields');
+    var ollamaModelInput = document.getElementById('agent-ollama-model');
+    var ollamaFields = document.querySelectorAll('.agent-ollama-fields');
     var endpointInput = document.getElementById('agent-endpoint');
     var modelInput = document.getElementById('agent-model');
     var customKeyInput = document.getElementById('agent-custom-key');
@@ -768,6 +776,7 @@
 
     var DEEPSEEK_ENDPOINT = 'https://api.deepseek.com/chat/completions';
     var DEEPSEEK_MODEL = 'deepseek-chat';
+    var OLLAMA_ENDPOINT = 'http://localhost:11434/v1/chat/completions';
 
     function getProviderValue() {
       var sel = providerMenu.querySelector('.agent-dropdown-option.selected');
@@ -778,7 +787,8 @@
       providerMenu.querySelectorAll('.agent-dropdown-option').forEach(function(opt) {
         opt.classList.toggle('selected', opt.dataset.value === val);
       });
-      providerSelect.textContent = val === 'custom' ? 'Custom provider…' : 'DeepSeek';
+      var labels = { deepseek: 'DeepSeek', ollama: 'Local — Ollama (open-weight)', custom: 'Custom provider…' };
+      providerSelect.textContent = labels[val] || val;
     }
 
     // Dropdown toggle
@@ -809,8 +819,12 @@
     function getSearchKey() { return searchKeyInput.value.trim(); }
 
     function getProviderConfig() {
-      if (getProviderValue() === 'deepseek') {
+      var val = getProviderValue();
+      if (val === 'deepseek') {
         return { endpoint: DEEPSEEK_ENDPOINT, model: DEEPSEEK_MODEL, apiKey: dsKeyInput.value.trim() };
+      }
+      if (val === 'ollama') {
+        return { endpoint: OLLAMA_ENDPOINT, model: ollamaModelInput.value.trim() || 'llama3.1:8b', apiKey: 'ollama' };
       }
       return {
         endpoint: endpointInput.value.trim() || DEEPSEEK_ENDPOINT,
@@ -820,9 +834,10 @@
     }
 
     function toggleProviderFields() {
-      var isCustom = getProviderValue() === 'custom';
-      dsFields.forEach(function(el) { el.style.display = isCustom ? 'none' : ''; });
-      customFields.forEach(function(el) { el.style.display = isCustom ? '' : 'none'; });
+      var val = getProviderValue();
+      dsFields.forEach(function(el) { el.style.display = val === 'deepseek' ? '' : 'none'; });
+      ollamaFields.forEach(function(el) { el.style.display = val === 'ollama' ? '' : 'none'; });
+      customFields.forEach(function(el) { el.style.display = val === 'custom' ? '' : 'none'; });
     }
 
     settingsToggle.addEventListener('click', function() {
@@ -838,6 +853,7 @@
       var ep = sessionStorage.getItem('ergo_endpoint');
       var mod = sessionStorage.getItem('ergo_model');
       var ck = sessionStorage.getItem('ergo_custom_key');
+      var om = sessionStorage.getItem('ergo_ollama_model');
 
       setProviderValue(prov);
       if (dk) dsKeyInput.value = dk;
@@ -847,17 +863,19 @@
       if (ep) endpointInput.value = ep;
       if (mod) modelInput.value = mod;
       if (ck) customKeyInput.value = ck;
+      if (om) ollamaModelInput.value = om;
       toggleProviderFields();
       if (settingsPanel) settingsPanel.classList.add('open');
     }
 
-    [dsKeyInput, searchKeyInput, endpointInput, modelInput, customKeyInput].forEach(function(el) {
+    [dsKeyInput, searchKeyInput, endpointInput, modelInput, customKeyInput, ollamaModelInput].forEach(function(el) {
       el.addEventListener('input', function() {
         sessionStorage.setItem('ergo_ds_key', dsKeyInput.value.trim());
         sessionStorage.setItem('ergo_search_key', searchKeyInput.value.trim());
         sessionStorage.setItem('ergo_endpoint', endpointInput.value.trim());
         sessionStorage.setItem('ergo_model', modelInput.value.trim());
         sessionStorage.setItem('ergo_custom_key', customKeyInput.value.trim());
+        sessionStorage.setItem('ergo_ollama_model', ollamaModelInput.value.trim());
       });
     });
 
